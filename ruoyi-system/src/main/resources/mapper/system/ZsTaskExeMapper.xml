@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ZsTaskExeMapper">
+    
+    <resultMap type="ZsTaskExe" id="ZsTaskExeResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="taskId"    />
+        <result property="executor"    column="executor"    />
+        <result property="beginTime"    column="beginTime"    />
+        <result property="endTime"    column="endTime"    />
+        <result property="formResult"    column="formResult"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectZsTaskExeVo">
+        select id, taskId, executor, beginTime, endTime, formResult, remark from zs_task_exe
+    </sql>
+
+    <select id="selectZsTaskExeList" parameterType="ZsTaskExe" resultMap="ZsTaskExeResult">
+        <include refid="selectZsTaskExeVo"/>
+        <where>  
+            <if test="taskId != null "> and taskId = #{taskId}</if>
+            <if test="executor != null "> and executor = #{executor}</if>
+            <if test="beginTime != null "> and beginTime = #{beginTime}</if>
+            <if test="endTime != null "> and endTime = #{endTime}</if>
+            <if test="formResult != null  and formResult != ''"> and formResult = #{formResult}</if>
+        </where>
+    </select>
+    
+    <select id="selectZsTaskExeById" parameterType="Long" resultMap="ZsTaskExeResult">
+        <include refid="selectZsTaskExeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZsTaskExe" parameterType="ZsTaskExe" useGeneratedKeys="true" keyProperty="id">
+        insert into zs_task_exe
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">taskId,</if>
+            <if test="executor != null">executor,</if>
+            <if test="beginTime != null">beginTime,</if>
+            <if test="endTime != null">endTime,</if>
+            <if test="formResult != null">formResult,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="executor != null">#{executor},</if>
+            <if test="beginTime != null">#{beginTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="formResult != null">#{formResult},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZsTaskExe" parameterType="ZsTaskExe">
+        update zs_task_exe
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">taskId = #{taskId},</if>
+            <if test="executor != null">executor = #{executor},</if>
+            <if test="beginTime != null">beginTime = #{beginTime},</if>
+            <if test="endTime != null">endTime = #{endTime},</if>
+            <if test="formResult != null">formResult = #{formResult},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteZsTaskExeById" parameterType="Long">
+        delete from zs_task_exe where id = #{id}
+    </delete>
+
+    <delete id="deleteZsTaskExeByIds" parameterType="String">
+        delete from zs_task_exe where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

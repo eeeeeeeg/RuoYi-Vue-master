@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ZsFormTemplateMapper">
+    
+    <resultMap type="ZsFormTemplate" id="ZsFormTemplateResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="formData"    column="formData"    />
+        <result property="createBy"    column="createBy"    />
+        <result property="createTime"    column="createTime"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectZsFormTemplateVo">
+        select id, name, formData, createBy, createTime, remark from zs_form_template
+    </sql>
+
+    <select id="selectZsFormTemplateList" parameterType="ZsFormTemplate" resultMap="ZsFormTemplateResult">
+        <include refid="selectZsFormTemplateVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="formData != null  and formData != ''"> and formData = #{formData}</if>
+            <if test="createBy != null "> and createBy = #{createBy}</if>
+            <if test="createTime != null "> and createTime = #{createTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectZsFormTemplateById" parameterType="Long" resultMap="ZsFormTemplateResult">
+        <include refid="selectZsFormTemplateVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZsFormTemplate" parameterType="ZsFormTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into zs_form_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="formData != null">formData,</if>
+            <if test="createBy != null">createBy,</if>
+            <if test="createTime != null">createTime,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="formData != null">#{formData},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZsFormTemplate" parameterType="ZsFormTemplate">
+        update zs_form_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="formData != null">formData = #{formData},</if>
+            <if test="createBy != null">createBy = #{createBy},</if>
+            <if test="createTime != null">createTime = #{createTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteZsFormTemplateById" parameterType="Long">
+        delete from zs_form_template where id = #{id}
+    </delete>
+
+    <delete id="deleteZsFormTemplateByIds" parameterType="String">
+        delete from zs_form_template where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

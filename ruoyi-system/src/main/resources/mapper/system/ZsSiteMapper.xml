@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ZsSiteMapper">
+    
+    <resultMap type="ZsSite" id="ZsSiteResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="coordinates"    column="coordinates"    />
+        <result property="status"    column="status"    />
+        <result property="createUser"    column="createUser"    />
+        <result property="createTime"    column="createTime"    />
+        <result property="updateUser"    column="updateUser"    />
+        <result property="updateTime"    column="updateTime"    />
+    </resultMap>
+    <resultMap type="ZsSiteResultVo" id="ZsSiteResultVo">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="coordinates"    column="coordinates"    />
+        <result property="status"    column="status"    />
+        <result property="createUser"    column="createUser"    />
+        <result property="createUserName"    column="createUserName"    />
+        <result property="createTime"    column="createTime"    />
+        <result property="updateUser"    column="updateUser"    />
+        <result property="updateUserName"    column="updateUserName"    />
+        <result property="updateTime"    column="updateTime"    />
+        <result property="statusValue"    column="statusValue"    />
+
+    </resultMap>
+
+    <sql id="selectZsSiteVo">
+        select id, name, coordinates, status, createUser, createTime, updateUser, updateTime from zs_site
+    </sql>
+
+    <select id="selectZsSiteList" parameterType="ZsSite" resultMap="ZsSiteResultVo">
+        select id, name, coordinates, s.status, createUser, createTime,
+               u.user_name as createUserName, updateUser, updateTime,
+               u1.user_name  as updateUserName
+        from zs_site as s LEFT JOIN
+        sys_user AS u ON
+        s.createUser = u.user_id LEFT JOIN
+        sys_user AS u1 ON
+        s.updateUser = u1.user_id
+        <where>
+            <if test="name != null  and name != ''"> and s.name like concat('%', #{name}, '%')</if>
+            <if test="coordinates != null  and coordinates != ''"> and s.coordinates like concat('%', #{coordinates}, '%')</if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="createUser != null  and createUser != ''"> and u.user_name = #{createUser}</if>
+            <if test="createTime != null  and createTime != ''"> and s.createTime = #{createTime}</if>
+            <if test="updateUser != null  and updateUser != ''"> and u1.user_name = #{updateUser}</if>
+            <if test="updateTime != null  and updateTime != ''"> and s.updateTime = #{updateTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(s.createTime,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(s.createTime,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectZsSiteById" parameterType="Long" resultMap="ZsSiteResult">
+        <include refid="selectZsSiteVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZsSite" parameterType="ZsSite">
+        insert into zs_site
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="coordinates != null">coordinates,</if>
+            <if test="status != null">status,</if>
+            <if test="createUser != null">createUser,</if>
+            <if test="createTime != null">createTime,</if>
+            <if test="updateUser != null">updateUser,</if>
+            <if test="updateTime != null">updateTime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="coordinates != null">#{coordinates},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZsSite" parameterType="ZsSite">
+        update zs_site
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="coordinates != null">coordinates = #{coordinates},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createUser != null">createUser = #{createUser},</if>
+            <if test="createTime != null">createTime = #{createTime},</if>
+            <if test="updateUser != null">updateUser = #{updateUser},</if>
+            <if test="updateTime != null">updateTime = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteZsSiteById" parameterType="Long">
+        delete from zs_site where id = #{id}
+    </delete>
+
+    <delete id="deleteZsSiteByIds" parameterType="String">
+        delete from zs_site where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
