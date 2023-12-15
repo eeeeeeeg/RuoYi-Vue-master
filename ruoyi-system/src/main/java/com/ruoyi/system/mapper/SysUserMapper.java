@@ -51,6 +51,8 @@ public interface SysUserMapper
      */
     public SysUser selectUserById(Long userId);
 
+    public SysUser queryUserByPhone(String phone);
+
     /**
      * 新增用户信息
      * 

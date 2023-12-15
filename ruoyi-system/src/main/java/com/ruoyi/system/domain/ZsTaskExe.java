@@ -42,6 +42,17 @@ public class ZsTaskExe extends BaseEntity
     @Excel(name = "表单保存结果")
     private String formResult;
 
+    public String getFormStatus() {
+        return formStatus;
+    }
+
+    public void setFormStatus(String formStatus) {
+        this.formStatus = formStatus;
+    }
+
+    @Excel(name = "表单状态")
+    private String formStatus;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -107,6 +118,7 @@ public class ZsTaskExe extends BaseEntity
             .append("endTime", getEndTime())
             .append("formResult", getFormResult())
             .append("remark", getRemark())
+            .append("formStatus", getFormStatus())
             .toString();
     }
 }

@@ -50,6 +50,8 @@ public interface ISysUserService
      */
     public SysUser selectUserById(Long userId);
 
+    public SysUser queryUserByPhone(String phone);
+
     /**
      * 根据用户ID查询用户所属角色组
      * 

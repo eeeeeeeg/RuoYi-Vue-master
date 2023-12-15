@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.AllTaskList;
 import com.ruoyi.system.domain.ZsTaskExe;
 
 /**
@@ -27,6 +29,8 @@ public interface ZsTaskExeMapper
      */
     public List<ZsTaskExe> selectZsTaskExeList(ZsTaskExe zsTaskExe);
 
+    public List <AllTaskList> allTaskList();
+
     /**
      * 新增taskExe
      * 
@@ -42,6 +46,10 @@ public interface ZsTaskExeMapper
      * @return 结果
      */
     public int updateZsTaskExe(ZsTaskExe zsTaskExe);
+
+    public int editExeInfo(ZsTaskExe zsTaskExe);
+
+    public int editExeInfo(AllTaskList allTaskList);
 
     /**
      * 删除taskExe

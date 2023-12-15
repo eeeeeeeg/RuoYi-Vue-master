@@ -1,6 +1,9 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.AllTaskList;
+import com.ruoyi.system.domain.TaskExeEditInfo;
 import com.ruoyi.system.domain.ZsTaskExe;
 
 /**
@@ -27,6 +30,8 @@ public interface IZsTaskExeService
      */
     public List<ZsTaskExe> selectZsTaskExeList(ZsTaskExe zsTaskExe);
 
+    public List <AllTaskList> allTaskList();
+
     /**
      * 新增taskExe
      * 
@@ -42,6 +47,10 @@ public interface IZsTaskExeService
      * @return 结果
      */
     public int updateZsTaskExe(ZsTaskExe zsTaskExe);
+
+    public int editExeAllTaskInfo(TaskExeEditInfo taskExeEditInfo);
+
+    public int editExeInfo(AllTaskList allTaskList);
 
     /**
      * 批量删除taskExe

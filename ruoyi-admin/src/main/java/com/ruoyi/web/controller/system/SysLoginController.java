@@ -2,7 +2,11 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import java.util.Set;
+
+import com.ruoyi.common.exception.PhoneNotMatchException;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +54,23 @@ public class SysLoginController
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
+
+
+    /**
+     * 登录方法
+     *
+     * @param sysUser 登录信息
+     * @return 结果
+     */
+    @PostMapping("/phoneLogin")
+    public AjaxResult phoneLogin(@RequestBody SysUser sysUser) throws PhoneNotMatchException {
+        AjaxResult ajax = AjaxResult.success();
+        // 生成令牌
+        String token = loginService.phoneLogin(sysUser);
+        ajax.put(Constants.TOKEN, token);
+        return ajax;
+    }
+
 
     /**
      * 获取用户信息

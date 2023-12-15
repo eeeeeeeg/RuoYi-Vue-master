@@ -2,7 +2,9 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,11 +28,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.JasyptUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysPostService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
+import static com.ruoyi.common.utils.JasyptUtils.AES_KEY;
 
 /**
  * 用户信息
@@ -116,14 +120,22 @@ public class SysUserController extends BaseController
         return ajax;
     }
 
+
+    @PreAuthorize("@ss.hasPermi('system:user:query')")
+    @PostMapping(value = { "/queryUserByPhone" })
+    public AjaxResult queryUserByPhone(@PathVariable(value = "phone", required = false) String phone)
+    {
+        SysUser sysUser = userService.queryUserByPhone(phone);
+        return AjaxResult.success(sysUser);
+    }
+
     /**
      * 新增用户
      */
     @PreAuthorize("@ss.hasPermi('system:user:add')")
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysUser user)
-    {
+    public AjaxResult add(@Validated @RequestBody SysUser user) throws Exception {
         if (!userService.checkUserNameUnique(user))
         {
             return error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");

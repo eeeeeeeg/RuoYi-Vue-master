@@ -2,6 +2,9 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.system.domain.AllTaskList;
+import com.ruoyi.system.domain.TaskExeEditInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +47,18 @@ public class ZsTaskExeController extends BaseController
         startPage();
         List<ZsTaskExe> list = zsTaskExeService.selectZsTaskExeList(zsTaskExe);
         return getDataTable(list);
+    }
+
+
+    /**
+     * 查询关联taskExe列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:taskExe:list')")
+    @GetMapping("/allTaskList")
+    public AjaxResult allTaskList()
+    {
+        List <AllTaskList> list = zsTaskExeService.allTaskList();
+        return AjaxResult.success(list);
     }
 
     /**
@@ -89,6 +104,24 @@ public class ZsTaskExeController extends BaseController
     public AjaxResult edit(@RequestBody ZsTaskExe zsTaskExe)
     {
         return toAjax(zsTaskExeService.updateZsTaskExe(zsTaskExe));
+    }
+
+
+    @PreAuthorize("@ss.hasPermi('system:taskExe:edit')")
+    @Log(title = "taskExe", businessType = BusinessType.UPDATE)
+    @PostMapping("/editExeAllTaskInfo")
+    public AjaxResult editExeAllTaskInfo(@RequestBody TaskExeEditInfo taskExeEditInfo)
+    {
+        return toAjax(zsTaskExeService.editExeAllTaskInfo(taskExeEditInfo));
+    }
+
+
+    @PreAuthorize("@ss.hasPermi('system:taskExe:edit')")
+    @Log(title = "taskExe", businessType = BusinessType.UPDATE)
+    @PostMapping("/editExeInfo")
+    public AjaxResult editExeInfo(@RequestBody AllTaskList allTaskList)
+    {
+        return toAjax(zsTaskExeService.editExeInfo(allTaskList));
     }
 
     /**

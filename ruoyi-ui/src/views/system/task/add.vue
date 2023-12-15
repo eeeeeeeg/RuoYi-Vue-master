@@ -156,7 +156,6 @@ export default {
     submitForm() {
       this.$refs["formRef"].validate((valid) => {
         if (valid) {
-          console.log("wangc --------- this.form.", this.form);
           const params = {
             id: this.form.id,
             name: this.form.name,
@@ -164,6 +163,7 @@ export default {
             roleId: this.form.roleId.join(","),
             formData: JSON.stringify(this.form.formData),
             remark: this.form.remark,
+            taskType: this.form.taskType,
           };
           if (this.form.id != null) {
             updateTask(params).then((response) => {

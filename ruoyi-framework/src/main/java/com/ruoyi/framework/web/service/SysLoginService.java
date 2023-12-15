@@ -1,6 +1,12 @@
 package com.ruoyi.framework.web.service;
 
 import javax.annotation.Resource;
+
+import com.ruoyi.common.exception.PhoneNotMatchException;
+import com.ruoyi.common.utils.JasyptUtils;
+import com.ruoyi.common.utils.uuid.IdUtils;
+import com.ruoyi.system.mapper.SysUserMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,6 +35,10 @@ import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 
+import java.util.Collection;
+
+import static com.ruoyi.common.utils.JasyptUtils.AES_KEY;
+
 /**
  * 登录校验方法
  * 
@@ -51,6 +61,9 @@ public class SysLoginService
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 登录验证
@@ -94,6 +107,49 @@ public class SysLoginService
             AuthenticationContextHolder.clearContext();
         }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        recordLoginInfo(loginUser.getUserId());
+        // 生成token
+        return tokenService.createToken(loginUser);
+    }
+
+    /**
+     * 登录验证
+     *
+     * @param
+     * @return 结果
+     */
+    public String phoneLogin(SysUser sysUser) throws PhoneNotMatchException {
+        // 用户验证
+        Authentication authentication = null;
+
+        SysUser resp = userMapper.queryUserByPhone(sysUser.getPhonenumber());
+
+        try
+        {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(resp.getUserName(), sysUser.getPassword());
+            AuthenticationContextHolder.setContext(authenticationToken);
+            // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
+            authentication = authenticationManager.authenticate(authenticationToken);
+        }
+        catch (Exception e)
+        {
+            if (e instanceof BadCredentialsException)
+            {
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(sysUser.getPhonenumber(), Constants.LOGIN_FAIL, MessageUtils.message("user.password.not.match")));
+                throw new UserPasswordNotMatchException();
+            }
+            else
+            {
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(sysUser.getPhonenumber(), Constants.LOGIN_FAIL, e.getMessage()));
+                throw new ServiceException(e.getMessage());
+            }
+        }
+        finally
+        {
+            AuthenticationContextHolder.clearContext();
+        }
+        AsyncManager.me().execute(AsyncFactory.recordLogininfor(sysUser.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
         // 生成token

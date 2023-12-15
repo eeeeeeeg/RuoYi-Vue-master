@@ -12,10 +12,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="endTime"    column="endTime"    />
         <result property="formResult"    column="formResult"    />
         <result property="remark"    column="remark"    />
+        <result property="formStatus"    column="formStatus"    />
+    </resultMap>
+
+    <resultMap type="AllTaskList" id="AllTaskListResult">
+        <result property="exeId"    column="exeId"    />
+        <result property="taskId"    column="taskId"    />
+        <result property="executor"    column="executor"    />
+        <result property="beginTime"    column="beginTime"    />
+        <result property="endTime"    column="endTime"    />
+        <result property="formResult"    column="formResult"    />
+        <result property="exeRemark"    column="exeRemark"    />
+        <result property="formStatus"    column="formStatus"    />
+        <result property="formData"    column="formData"    />
+        <result property="taskType"    column="taskType"    />
+        <result property="siteId"    column="siteId"    />
+        <result property="roleId"    column="roleId"    />
+        <result property="taskStatus"    column="taskStatus"    />
+        <result property="taskRemark"    column="taskRemark"    />
+        <result property="siteName"    column="siteName"    />
+        <result property="coordinates"    column="coordinates"    />
     </resultMap>
 
     <sql id="selectZsTaskExeVo">
-        select id, taskId, executor, beginTime, endTime, formResult, remark from zs_task_exe
+        select id, taskId, executor, beginTime, endTime, formResult, remark ,formStatus from zs_task_exe
     </sql>
 
     <select id="selectZsTaskExeList" parameterType="ZsTaskExe" resultMap="ZsTaskExeResult">
@@ -27,6 +47,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null "> and endTime = #{endTime}</if>
             <if test="formResult != null  and formResult != ''"> and formResult = #{formResult}</if>
         </where>
+    </select>
+
+    <select id="allTaskList" parameterType="ZsTaskExe" resultMap="AllTaskListResult">
+        SELECT a.id as exeId,a.taskId,a.executor,a.beginTime,a.endTime,a.formResult ,a.remark as exeRemark,a.formStatus,
+               b.formData,b.taskType,b.siteId,b.roleId,b.status as taskStatus,b.remark as taskRemark,
+               c.name as siteName,c.coordinates from zs_task_exe  a left join zs_task b  on a.taskId = b.id
+                   left join zs_site c on b.siteId=c.id
+<!--        <where>-->
+<!--            <if test="taskId != null "> and taskId = #{taskId}</if>-->
+<!--            <if test="executor != null "> and executor = #{executor}</if>-->
+<!--            <if test="beginTime != null "> and beginTime = #{beginTime}</if>-->
+<!--            <if test="endTime != null "> and endTime = #{endTime}</if>-->
+<!--            <if test="formResult != null  and formResult != ''"> and formResult = #{formResult}</if>-->
+<!--        </where>-->
     </select>
     
     <select id="selectZsTaskExeById" parameterType="Long" resultMap="ZsTaskExeResult">
@@ -43,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null">endTime,</if>
             <if test="formResult != null">formResult,</if>
             <if test="remark != null">remark,</if>
+            <if test="formStatus != null">formStatus,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="taskId != null">#{taskId},</if>
@@ -51,6 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null">#{endTime},</if>
             <if test="formResult != null">#{formResult},</if>
             <if test="remark != null">#{remark},</if>
+            <if test="formStatus != null">#{formStatus},</if>
          </trim>
     </insert>
 
@@ -63,6 +99,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null">endTime = #{endTime},</if>
             <if test="formResult != null">formResult = #{formResult},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="formStatus != null">formStatus = #{formStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="editExeInfo" parameterType="AllTaskList">
+        update zs_task_exe
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">taskId = #{taskId},</if>
+            <if test="executor != null">executor = #{executor},</if>
+            <if test="beginTime != null">beginTime = #{beginTime},</if>
+            <if test="endTime != null">endTime = #{endTime},</if>
+            <if test="formResult != null">formResult = #{formResult},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="formStatus != null">formStatus = #{formStatus},</if>
         </trim>
         where id = #{id}
     </update>

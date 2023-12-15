@@ -101,6 +101,10 @@ public class SecurityUtils
         return passwordEncoder.encode(password);
     }
 
+    public static void main(String[] args) {
+        System.out.printf(encryptPassword("admin8"));
+    }
+
     /**
      * 判断密码是否相同
      *
