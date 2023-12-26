@@ -1,6 +1,8 @@
 package com.ruoyi.quartz.mapper;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.model.ZsTask;
 import com.ruoyi.quartz.domain.SysJob;
 
 /**
@@ -64,4 +66,6 @@ public interface SysJobMapper
      * @return 结果
      */
     public int insertJob(SysJob job);
+
+    public int updateZsTaskJobId(ZsTask zsTask);
 }

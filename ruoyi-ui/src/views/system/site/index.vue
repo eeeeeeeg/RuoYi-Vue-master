@@ -167,7 +167,7 @@
       append-to-body
       destroy-on-close
     >
-      <div class="dialog-container">
+      <div class="dialog-container" v-if="open">
         <DistanceViewer
           ref="distanceViewerRef"
           @updateSiteInfo="updateSiteInfo"
@@ -334,7 +334,9 @@ export default {
         const lng = this.form.coordinates.split(",")[0].slice(1);
         const lat = this.form.coordinates.split(",")[1].slice(0, -1);
         this.$nextTick(() => {
-          this.$refs.distanceViewerRef.setRemoteLocation({ lng, lat });
+          setTimeout(() => {
+            this.$refs.distanceViewerRef.setRemoteLocation({ lng, lat });
+          }, 6000);
         });
       });
     },

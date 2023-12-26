@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.ruoyi.system.domain.AllTaskList;
@@ -48,7 +49,7 @@ public interface IZsTaskExeService
      */
     public int updateZsTaskExe(ZsTaskExe zsTaskExe);
 
-    public int editExeAllTaskInfo(TaskExeEditInfo taskExeEditInfo);
+    public int editExeAllTaskInfo(TaskExeEditInfo taskExeEditInfo) throws ParseException;
 
     public int editExeInfo(AllTaskList allTaskList);
 

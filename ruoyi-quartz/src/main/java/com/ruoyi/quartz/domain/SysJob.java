@@ -54,6 +54,29 @@ public class SysJob extends BaseEntity
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
     private String status;
 
+    /** 标志 */
+    private String taskFlag;
+
+    public String getTaskFlag() {
+        return taskFlag;
+    }
+
+    public void setTaskFlag(String taskFlag) {
+        this.taskFlag = taskFlag;
+    }
+
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    /** 任务状态（0正常 1暂停） */
+    private Long taskId;
+
     public Long getJobId()
     {
         return jobId;
@@ -166,6 +189,8 @@ public class SysJob extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("taskFlag", getTaskFlag())
+            .append("taskId", getTaskId())
             .toString();
     }
 }

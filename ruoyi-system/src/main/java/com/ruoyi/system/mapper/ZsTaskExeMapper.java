@@ -29,7 +29,7 @@ public interface ZsTaskExeMapper
      */
     public List<ZsTaskExe> selectZsTaskExeList(ZsTaskExe zsTaskExe);
 
-    public List <AllTaskList> allTaskList();
+    public List <AllTaskList> allTaskList(Long userId);
 
     /**
      * 新增taskExe
@@ -59,6 +59,8 @@ public interface ZsTaskExeMapper
      */
     public int deleteZsTaskExeById(Long id);
 
+    public int deleteZsTaskExeByTaskId(String taskId);
+
     /**
      * 批量删除taskExe
      * 
@@ -66,4 +68,6 @@ public interface ZsTaskExeMapper
      * @return 结果
      */
     public int deleteZsTaskExeByIds(Long[] ids);
+
+    public int deleteZsTaskExeByTaskIds(String[] taskIds);
 }

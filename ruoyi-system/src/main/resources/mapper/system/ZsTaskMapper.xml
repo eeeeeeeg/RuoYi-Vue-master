@@ -1,53 +1,88 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.ZsTaskMapper">
-    
+
     <resultMap type="ZsTask" id="ZsTaskResult">
-        <result property="id"    column="id"    />
-        <result property="siteId"    column="siteId"    />
-        <result property="roleId"    column="roleId"    />
-        <result property="taskType"    column="taskType"    />
-        <result property="taskBeginTime"    column="taskBeginTime"    />
-        <result property="taskEndTime"    column="taskEndTime"    />
-        <result property="createBy"    column="createBy"    />
-        <result property="createTime"    column="createTime"    />
-        <result property="updateBy"    column="updateBy"    />
-        <result property="updateTime"    column="updateTime"    />
-        <result property="name"    column="name"    />
-        <result property="formData"    column="formData"    />
-        <result property="status"    column="status"    />
-        <result property="remark"    column="remark"    />
+        <result property="id" column="id"/>
+        <result property="siteId" column="siteId"/>
+        <result property="roleId" column="roleId"/>
+        <result property="taskType" column="taskType"/>
+        <result property="taskBeginTime" column="taskBeginTime"/>
+        <result property="taskEndTime" column="taskEndTime"/>
+        <result property="createBy" column="createBy"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateBy" column="updateBy"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="name" column="name"/>
+        <result property="formData" column="formData"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="taskRang" column="taskRang"/>
+    </resultMap>
+
+    <resultMap type="TaskReport" id="TaskReports">
+        <result property="user_name" column="user_name"/>
+        <result property="siteName" column="siteName"/>
+        <result property="dept_id" column="dept"/>
+        <result property="phonenumber" column="phonenumber"/>
+        <result property="taskBeginTime" column="taskBeginTime"/>
+        <result property="taskEndTime" column="taskEndTime"/>
+        <result property="patrolDuration" column="patrolDuration"/>
+        <result property="taskName" column="taskName"/>
     </resultMap>
 
     <sql id="selectZsTaskVo">
-        select id, siteId, roleId, taskType, taskBeginTime, taskEndTime, createBy, createTime, updateBy, updateTime, name, formData, status, remark from zs_task
+        select id,
+               siteId,
+               roleId,
+               taskType,
+               taskBeginTime,
+               taskEndTime,
+               createBy,
+               createTime,
+               updateBy,
+               updateTime,
+               name,
+               formData,
+               status,
+               remark
+        from zs_task
     </sql>
 
     <select id="selectZsTaskList" parameterType="ZsTask" resultMap="ZsTaskResult">
         <include refid="selectZsTaskVo"/>
-        <where>  
-            <if test="siteId != null "> and siteId = #{siteId}</if>
-            <if test="roleId != null "> and roleId = #{roleId}</if>
-            <if test="taskType != null  and taskType != ''"> and taskType = #{taskType}</if>
-            <if test="taskBeginTime != null "> and taskBeginTime = #{taskBeginTime}</if>
-            <if test="taskEndTime != null "> and taskEndTime = #{taskEndTime}</if>
-            <if test="createBy != null "> and createBy = #{createBy}</if>
-            <if test="createTime != null "> and createTime = #{createTime}</if>
-            <if test="updateBy != null "> and updateBy = #{updateBy}</if>
-            <if test="updateTime != null "> and updateTime = #{updateTime}</if>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="formData != null  and formData != ''"> and formData = #{formData}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
+        <where>
+            <if test="siteId != null ">and siteId = #{siteId}</if>
+            <if test="roleId != null ">and roleId = #{roleId}</if>
+            <if test="taskType != null  and taskType != ''">and taskType = #{taskType}</if>
+            <if test="taskBeginTime != null ">and taskBeginTime = #{taskBeginTime}</if>
+            <if test="taskEndTime != null ">and taskEndTime = #{taskEndTime}</if>
+            <if test="createBy != null ">and createBy = #{createBy}</if>
+            <if test="createTime != null ">and createTime = #{createTime}</if>
+            <if test="updateBy != null ">and updateBy = #{updateBy}</if>
+            <if test="updateTime != null ">and updateTime = #{updateTime}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="formData != null  and formData != ''">and formData = #{formData}</if>
+            <if test="status != null  and status != ''">and status = #{status}</if>
         </where>
     </select>
-    
+
+    <select id="selectTaskReport" parameterType="ZsTask" resultMap="TaskReports">
+        SELECT  b.user_name,t.siteId,c.name as siteName,b.dept_id,b.phonenumber,t.taskBeginTime,t.taskEndTime,t.patrolDuration,t.name as taskName,t.status as taskStatus,t.formResult,t.formData,t.roleId
+        from zs_task  t left join sys_user  b  on  t.executor=b.user_id  left join zs_site c on t.siteId=c.id
+        <where>
+            <if test="siteId != null ">and c.siteName = #{siteId}</if>
+            <if test="taskType != null ">and t.taskType = #{taskType}</if>
+        </where>
+    </select>
+
     <select id="selectZsTaskById" parameterType="Long" resultMap="ZsTaskResult">
         <include refid="selectZsTaskVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertZsTask" parameterType="ZsTask" useGeneratedKeys="true" keyProperty="id">
         insert into zs_task
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -64,7 +99,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="formData != null">formData,</if>
             <if test="status != null">status,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+            <if test="taskRang != null">taskRang,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="siteId != null">#{siteId},</if>
             <if test="roleId != null">#{roleId},</if>
@@ -79,7 +115,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="formData != null">#{formData},</if>
             <if test="status != null">#{status},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+            <if test="taskRang != null">#{taskRang},</if>
+        </trim>
     </insert>
 
     <update id="updateZsTask" parameterType="ZsTask">
@@ -98,16 +135,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="formData != null">formData = #{formData},</if>
             <if test="status != null">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="taskRang != null">taskRang = #{taskRang},</if>
+            <if test="executor != null">executor = #{executor},</if>
+            <if test="patrolTime != null">patrolTime = #{patrolTime},</if>
+            <if test="formResult != null">formResult = #{formResult},</if>
         </trim>
         where id = #{id}
     </update>
 
+    <update id="updateZsTaskStatus" parameterType="ZsTask">
+        update zs_task
+        SET status = 3
+        where taskType = #{taskType}
+          and taskRang = #{taskRang}
+          and siteId = #{siteId}
+          and status != 3
+    </update>
+
     <delete id="deleteZsTaskById" parameterType="Long">
-        delete from zs_task where id = #{id}
+        delete
+        from zs_task
+        where id = #{id}
     </delete>
 
     <delete id="deleteZsTaskByIds" parameterType="String">
-        delete from zs_task where id in 
+        delete from zs_task where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

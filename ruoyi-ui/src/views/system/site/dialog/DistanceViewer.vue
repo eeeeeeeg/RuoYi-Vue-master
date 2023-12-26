@@ -105,24 +105,24 @@ export default {
       //创建地址解析器实例
       this.BMap = BMap;
       this.initFlag = true;
-      const geolocation = new BMap.Geolocation();
+      // const geolocation = new BMap.Geolocation();
       // 开启定位
-      var that = this;
-      console.log("wangc -------------- this.location:", this.location);
-      // // 创建地图实例
-      map.setCenter({ lat: 32.514746, lng: 120.144894 });
-      geolocation.getCurrentPosition(function (result) {
-        if (this.getStatus() == 0) {
-          // 定位成功，result.point 是定位坐标
-          const point = result.point;
-          that.location = point;
-          that.reverseGeocode(that.location);
-          console.log("当前位置:", point.lng, point.lat);
-        } else {
-          // 定位失败
-          console.error("定位失败:", this.getStatus());
-        }
-      });
+      // var that = this;
+      // console.log("wangc -------------- this.location:", this.location);
+      // // // 创建地图实例
+      // map.setCenter({ lat: 32.514746, lng: 120.144894 });
+      // geolocation.getCurrentPosition(function (result) {
+      //   if (this.getStatus() == 0) {
+      //     // 定位成功，result.point 是定位坐标
+      //     const point = result.point;
+      //     that.location = point;
+      //     that.reverseGeocode(that.location);
+      //     console.log("当前位置:", point.lng, point.lat);
+      //   } else {
+      //     // 定位失败
+      //     console.error("定位失败:", this.getStatus());
+      //   }
+      // });
     },
     handleMapClick(event) {
       // 获取点击位置的经纬度坐标
@@ -149,15 +149,16 @@ export default {
       });
     },
     // //设置远端的坐标
-    // setRemoteLocation({ lng, lat }) {
-    //   this.$nextTick(() => {
-    //     this.location = {
-    //       lng: lng.trim(),
-    //       lat: lat.trim(),
-    //     };
-    //   });
-    //   console.log("wangc ---------- setLocation:", this.location);
-    // },
+    setRemoteLocation({ lng, lat }) {
+      this.$nextTick(() => {
+        this.location = {
+          lng: lng.trim(),
+          lat: lat.trim(),
+        };
+        this.reverseGeocode(this.location);
+      });
+      console.log("wangc ---------- setLocation:", this.location);
+    },
     handleClick(event) {
       console.log("handleClick", event);
     },

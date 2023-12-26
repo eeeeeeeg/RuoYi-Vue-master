@@ -186,7 +186,7 @@
       :title="dialogTitle"
       :visible.sync="open"
       width="40%"
-      :close-on-click-modal="false"
+      :close-on-click-modal="true"
       :modal-append-to-body="false"
     >
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
@@ -472,7 +472,9 @@ export default {
             name: this.form.name,
             formData: JSON.stringify(this.drawingList),
           };
-          addTemplate(params);
+          addTemplate(params).then(() => {
+            this.open = false;
+          });
         }
       });
     },

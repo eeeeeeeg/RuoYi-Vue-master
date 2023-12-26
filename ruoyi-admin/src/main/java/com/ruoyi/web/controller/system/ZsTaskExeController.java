@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import java.text.ParseException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,7 +41,6 @@ public class ZsTaskExeController extends BaseController
     /**
      * 查询taskExe列表
      */
-    @PreAuthorize("@ss.hasPermi('system:taskExe:list')")
     @GetMapping("/list")
     public TableDataInfo list(ZsTaskExe zsTaskExe)
     {
@@ -53,7 +53,6 @@ public class ZsTaskExeController extends BaseController
     /**
      * 查询关联taskExe列表
      */
-    @PreAuthorize("@ss.hasPermi('system:taskExe:list')")
     @GetMapping("/allTaskList")
     public AjaxResult allTaskList()
     {
@@ -64,7 +63,6 @@ public class ZsTaskExeController extends BaseController
     /**
      * 导出taskExe列表
      */
-    @PreAuthorize("@ss.hasPermi('system:taskExe:export')")
     @Log(title = "taskExe", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ZsTaskExe zsTaskExe)
@@ -77,7 +75,6 @@ public class ZsTaskExeController extends BaseController
     /**
      * 获取taskExe详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:taskExe:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -87,7 +84,6 @@ public class ZsTaskExeController extends BaseController
     /**
      * 新增taskExe
      */
-    @PreAuthorize("@ss.hasPermi('system:taskExe:add')")
     @Log(title = "taskExe", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ZsTaskExe zsTaskExe)
@@ -98,7 +94,6 @@ public class ZsTaskExeController extends BaseController
     /**
      * 修改taskExe
      */
-    @PreAuthorize("@ss.hasPermi('system:taskExe:edit')")
     @Log(title = "taskExe", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ZsTaskExe zsTaskExe)
@@ -107,16 +102,13 @@ public class ZsTaskExeController extends BaseController
     }
 
 
-    @PreAuthorize("@ss.hasPermi('system:taskExe:edit')")
     @Log(title = "taskExe", businessType = BusinessType.UPDATE)
     @PostMapping("/editExeAllTaskInfo")
-    public AjaxResult editExeAllTaskInfo(@RequestBody TaskExeEditInfo taskExeEditInfo)
-    {
+    public AjaxResult editExeAllTaskInfo(@RequestBody TaskExeEditInfo taskExeEditInfo) throws ParseException {
         return toAjax(zsTaskExeService.editExeAllTaskInfo(taskExeEditInfo));
     }
 
 
-    @PreAuthorize("@ss.hasPermi('system:taskExe:edit')")
     @Log(title = "taskExe", businessType = BusinessType.UPDATE)
     @PostMapping("/editExeInfo")
     public AjaxResult editExeInfo(@RequestBody AllTaskList allTaskList)
@@ -127,7 +119,6 @@ public class ZsTaskExeController extends BaseController
     /**
      * 删除taskExe
      */
-    @PreAuthorize("@ss.hasPermi('system:taskExe:remove')")
     @Log(title = "taskExe", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

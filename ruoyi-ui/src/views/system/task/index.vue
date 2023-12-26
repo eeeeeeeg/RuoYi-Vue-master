@@ -9,20 +9,48 @@
       label-width="88px"
     >
       <el-form-item label="站点" prop="siteId">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.siteId"
           placeholder="请输入站点"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select
+          clearable
+          v-model="queryParams.siteId"
+          placeholder="请选择任务分配的站点"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in siteOptions"
+            :key="item.id"
+            :value="item.id"
+            :label="item.name"
+            >{{ item.name }}</el-option
+          >
+        </el-select>
       </el-form-item>
       <el-form-item label="角色" prop="roleId">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.roleId"
           placeholder="请输入角色"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select
+          clearable
+          v-model="queryParams.roleId"
+          placeholder="请选择角色"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in roleOptions"
+            :key="item.roleId"
+            :value="item.roleId"
+            :label="item.roleName"
+            >{{ item.roleName }}</el-option
+          >
+        </el-select>
       </el-form-item>
       <el-form-item label="任务名称" prop="name">
         <el-input
@@ -32,7 +60,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="创建人" prop="createBy">
+      <!-- <el-form-item label="创建人" prop="createBy">
         <el-input
           v-model="queryParams.createBy"
           placeholder="请输入创建人"
@@ -49,22 +77,42 @@
           placeholder="请选择创建时间"
         >
         </el-date-picker>
-      </el-form-item>
-      <el-form-item label="执行的角色" prop="updateBy">
+      </el-form-item> -->
+      <!-- <el-form-item label="执行的角色" prop="updateBy">
         <el-input
           v-model="queryParams.updateBy"
           placeholder="请选择执行任务的角色"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+        
+      </el-form-item> -->
       <el-form-item label="任务状态" prop="status">
-        <el-input
-          v-model="queryParams.status"
-          placeholder="请输入任务状态"
+        <el-select
           clearable
-          @keyup.enter.native="handleQuery"
-        />
+          v-model="queryParams.status"
+          placeholder="请选择任务状态"
+          style="width: 100%"
+        >
+          <el-option value="1" label="未执行"></el-option>
+          <el-option value="2" label="正在执行"></el-option>
+          <el-option value="3" label="已完成"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="任务类型" prop="taskType">
+        <el-select
+          clearable
+          v-model="queryParams.taskType"
+          placeholder="请选择任务类型"
+          style="width: 100%"
+        >
+          <el-option value="1" label="日巡检任务"></el-option>
+          <el-option value="2" label="周巡检任务"></el-option>
+          <el-option value="3" label="月巡检任务"></el-option>
+          <el-option value="4" label="季度巡检任务"></el-option>
+          <el-option value="5" label="年巡检任务"></el-option>
+          <el-option value="6" label="专项巡检任务"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -139,12 +187,51 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="任务名称" align="center" prop="name" />
-      <el-table-column label="任务状态" align="center" prop="status" />
-      <el-table-column label="任务id" align="center" prop="id" />
-      <el-table-column label="站点" align="center" prop="siteId" />
-      <el-table-column label="角色" align="center" prop="roleId" />
-      <el-table-column label="任务类型" align="center" prop="taskType" />
+      <el-table-column
+        label="任务名称"
+        align="center"
+        min-width="240"
+        prop="name"
+      />
+      <el-table-column label="任务状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <el-tag class="ml-2" v-if="scope.row.status == '1'">未执行</el-tag>
+          <el-tag
+            class="ml-2"
+            type="warning"
+            v-else-if="scope.row.status == '2'"
+            >正在执行</el-tag
+          >
+          <el-tag class="ml-2" type="success" v-else>已完成</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="站点"
+        align="center"
+        min-width="160"
+        prop="siteId"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.siteId | filterSiteName }}
+        </template>
+      </el-table-column>
+      <el-table-column label="角色" align="center" prop="roleId">
+        <template slot-scope="scope">
+          {{ scope.row.roleId | filterRoleName }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="任务类型"
+        align="center"
+        min-width="120"
+        prop="taskType"
+      >
+        <template slot-scope="scope">
+          <div>
+            {{ scope.row.taskType | filterTaskType }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="任务开始时间"
         align="center"
@@ -192,6 +279,7 @@
       <el-table-column
         label="操作"
         align="center"
+        min-width="120"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
@@ -211,6 +299,13 @@
             v-hasPermi="['system:task:remove']"
             >删除</el-button
           >
+          <!-- <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            >查看任务表单</el-button
+          > -->
         </template>
       </el-table-column>
     </el-table>
@@ -224,55 +319,19 @@
     />
 
     <!-- 添加或修改zs_task对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="站点" prop="siteId">
-          <el-input v-model="form.siteId" placeholder="请输入站点" />
-        </el-form-item>
-        <el-form-item label="角色" prop="roleId">
-          <el-input v-model="form.roleId" placeholder="请输入角色" />
-        </el-form-item>
-        <el-form-item label="任务开始时间" prop="taskBeginTime">
-          <el-date-picker
-            clearable
-            v-model="form.taskBeginTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择任务开始时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="任务结束时间" prop="taskEndTime">
-          <el-date-picker
-            clearable
-            v-model="form.taskEndTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择任务结束时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="任务名称" prop="name">
-          <el-input v-model="form.name" placeholder="请输入任务名称" />
-        </el-form-item>
-        <el-form-item label="表单模板" prop="formData">
-          <el-input
-            v-model="form.formData"
-            type="textarea"
-            placeholder="请输入内容"
-          />
-        </el-form-item>
-        <el-form-item label="任务状态" prop="status">
-          <el-input v-model="form.status" placeholder="请输入任务状态" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
+    <el-dialog
+      :title="title"
+      :visible.sync="open"
+      width="80%"
+      append-to-body
+      destroy-on-close
+    >
+      <TaskAdd
+        v-if="open"
+        :formInit="formInit"
+        @cancel="cancel"
+        @getList="handleQuery"
+      ></TaskAdd>
     </el-dialog>
   </div>
 </template>
@@ -285,9 +344,14 @@ import {
   addTask,
   updateTask,
 } from "@/api/system/task";
+import TaskAdd from "./TaskAdd.vue";
 
+import { listRole } from "@/api/system/role";
+import { listSite } from "@/api/system/site";
+var that;
 export default {
   name: "Task",
+  components: { TaskAdd },
   data() {
     return {
       // 遮罩层
@@ -329,12 +393,25 @@ export default {
       form: {},
       // 表单校验
       rules: {},
+      formInit: null,
+      roleOptions: [],
+      siteOptions: [],
     };
   },
   created() {
+    that = this;
     this.getList();
+    this.initOptionsList();
   },
   methods: {
+    initOptionsList() {
+      listRole({}).then((response) => {
+        this.roleOptions = response.rows;
+      });
+      listSite({}).then((response) => {
+        this.siteOptions = response.rows;
+      });
+    },
     /** 查询zs_task列表 */
     getList() {
       this.loading = true;
@@ -387,20 +464,24 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      this.formInit = null;
       // this.reset();
-      this.$router.push({ path: "/system/system/task/add" });
-      // this.open = true;
-      // this.title = "添加zs_task";
+      // this.$router.push({ path: "/system/system/task/add" });
+      this.open = true;
+      this.title = "添加任务";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      this.formInit = row;
       this.reset();
-      const id = row.id || this.ids;
-      getTask(id).then((response) => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改zs_task";
-      });
+      // const id = row.id || this.ids;
+      this.open = true;
+
+      this.title = "修改任务";
+      // getTask(id).then((response) => {
+      //   this.form = response.data;
+      //   this.open = true;
+      // });
     },
     /** 提交按钮 */
     submitForm() {
@@ -445,6 +526,56 @@ export default {
         },
         `task_${new Date().getTime()}.xlsx`
       );
+    },
+  },
+  filters: {
+    filterTaskType(val) {
+      let result = "";
+      switch (val) {
+        case "1":
+          result = "日巡检任务";
+          break;
+        case "2":
+          result = "周巡检任务";
+          break;
+        case "3":
+          result = "月巡检任务";
+          break;
+        case "4":
+          result = "季度巡检任务";
+          break;
+        case "5":
+          result = "年巡检任务";
+          break;
+        case "6":
+          result = "专项巡检任务";
+          break;
+
+        default:
+          break;
+      }
+      return result;
+    },
+    filterRoleName(val) {
+      const _temp = that.roleOptions.filter((item) => {
+        return item.roleId == val;
+      });
+      if (_temp.length > 0) {
+        return _temp[0].roleName;
+      }
+      return "--";
+    },
+    filterSiteName(val) {
+      if (!val) {
+        return "--";
+      }
+      const sites = val.split(",");
+      const _temp = that.siteOptions
+        .filter((item) => {
+          return sites.includes(item.id + "");
+        })
+        .map((item) => item.name);
+      return _temp.join(",");
     },
   },
 };

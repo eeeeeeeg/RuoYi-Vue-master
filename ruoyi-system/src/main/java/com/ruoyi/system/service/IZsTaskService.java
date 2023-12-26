@@ -1,7 +1,11 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
-import com.ruoyi.system.domain.ZsTask;
+
+import com.ruoyi.common.core.domain.model.TaskReport;
+import com.ruoyi.common.exception.job.TaskException;
+import com.ruoyi.common.core.domain.model.ZsTask;
+import org.quartz.SchedulerException;
 
 /**
  * zs_taskService接口
@@ -27,13 +31,15 @@ public interface IZsTaskService
      */
     public List<ZsTask> selectZsTaskList(ZsTask zsTask);
 
+    public List<TaskReport> selectTaskReport(ZsTask zsTask);
+
     /**
      * 新增zs_task
      * 
      * @param zsTask zs_task
      * @return 结果
      */
-    public int insertZsTask(ZsTask zsTask);
+    public int insertZsTask(ZsTask zsTask) throws SchedulerException, TaskException;
 
     /**
      * 修改zs_task
@@ -41,7 +47,7 @@ public interface IZsTaskService
      * @param zsTask zs_task
      * @return 结果
      */
-    public int updateZsTask(ZsTask zsTask,String userId);
+    public int updateZsTask(ZsTask zsTask,String userId) throws SchedulerException, TaskException;
 
     /**
      * 批量删除zs_task

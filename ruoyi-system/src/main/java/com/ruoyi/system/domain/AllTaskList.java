@@ -29,13 +29,13 @@ public class AllTaskList extends BaseEntity
     private Long taskId;
 
     /** 开始执行时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" )
+    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
 
     /** 结束执行时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
     /** 执行动态表单提交内容 */
@@ -66,6 +66,11 @@ public class AllTaskList extends BaseEntity
     @Excel(name = "任务名称")
     private String taskName;
 
+    /** 任务创建时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "任务创建时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date taskCreateTime;
+
     /** 任务状态 */
     @Excel(name = "任务状态")
     private String taskStatus;
@@ -82,5 +87,9 @@ public class AllTaskList extends BaseEntity
     /** 站点名称 */
     @Excel(name = "站点名称")
     private String siteName;
+
+    /** 站点名称 */
+    @Excel(name = "站点名称")
+    private String formStatus;
 
 }

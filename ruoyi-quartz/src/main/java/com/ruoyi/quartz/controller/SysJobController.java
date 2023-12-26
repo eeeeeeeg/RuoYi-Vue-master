@@ -2,6 +2,9 @@ package com.ruoyi.quartz.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.domain.model.ZsTask;
+import com.ruoyi.quartz.mapper.SysJobMapper;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +41,9 @@ public class SysJobController extends BaseController
 {
     @Autowired
     private ISysJobService jobService;
+
+    @Autowired
+    private SysJobMapper jobMapper;
 
     /**
      * 查询定时任务列表
@@ -107,7 +113,14 @@ public class SysJobController extends BaseController
             return error("新增任务'" + job.getJobName() + "'失败，目标字符串不在白名单内");
         }
         job.setCreateBy(getUsername());
-        return toAjax(jobService.insertJob(job));
+        jobService.insertJob(job);
+        /*if(job.getTaskFlag().equals("1")){
+            ZsTask zsTask = new ZsTask();
+            zsTask.setId(job.getTaskId());
+            zsTask.setJobId(job.getJobId());
+            jobMapper.updateZsTaskJobId(zsTask);
+        }*/
+        return AjaxResult.success();
     }
 
     /**
